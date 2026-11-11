@@ -1,0 +1,38 @@
+<h2>{{ isEdit ? "Modifier l'étudiant" : 'Ajouter un étudiant' }}</h2>
+
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>Prénom</label>
+    <input type="text" formControlName="firstName" />
+    @if (submitted && form['firstName'].errors?.['required']) {
+      <div class="text-danger">Le prénom est obligatoire</div>
+    }
+  </div>
+  <div>
+    <label>Nom</label>
+    <input type="text" formControlName="lastName" />
+    @if (submitted && form['lastName'].errors?.['required']) {
+      <div class="text-danger">Le nom est obligatoire</div>
+    }
+  </div>
+  <div>
+    <label>Email</label>
+    <input type="text" formControlName="email" />
+    @if (submitted && form['email'].errors?.['required']) {
+      <div class="text-danger">L'email est obligatoire</div>
+    }
+    @if (submitted && form['email'].errors?.['email']) {
+      <div class="text-danger">L'email n'est pas valide</div>
+    }
+  </div>
+
+  <button type="submit" [disabled]="loading">{{ isEdit ? 'Enregistrer' : 'Ajouter' }}</button>
+  <a routerLink="/students">Annuler</a>
+</form>
+
+@if (loading) {
+  <p>Chargement...</p>
+}
+@if (errorMessage) {
+  <p class="text-danger">{{ errorMessage }}</p>
+}

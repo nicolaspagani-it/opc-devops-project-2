@@ -1,0 +1,40 @@
+<h2>Étudiants</h2>
+<a routerLink="/students/new">Ajouter un étudiant</a>
+
+@if (loading) {
+  <p>Chargement...</p>
+}
+@if (errorMessage) {
+  <p class="text-danger">{{ errorMessage }}</p>
+}
+
+@if (!loading && students.length === 0 && !errorMessage) {
+  <p>Aucun étudiant.</p>
+}
+
+@if (students.length > 0) {
+  <table>
+    <thead>
+      <tr>
+        <th>Prénom</th>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (student of students; track student.id) {
+        <tr>
+          <td>{{ student.firstName }}</td>
+          <td>{{ student.lastName }}</td>
+          <td>{{ student.email }}</td>
+          <td>
+            <a [routerLink]="['/students', student.id]">Détail</a>
+            <a [routerLink]="['/students', student.id, 'edit']">Modifier</a>
+            <button type="button" (click)="onDelete(student)">Supprimer</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

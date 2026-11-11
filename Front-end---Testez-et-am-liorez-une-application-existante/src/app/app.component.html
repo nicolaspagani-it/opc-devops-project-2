@@ -1,0 +1,7 @@
+@if (authService.isLoggedIn()) {
+  <nav>
+    <a routerLink="/students">Étudiants</a>
+    <button type="button" (click)="logout()">Se déconnecter</button>
+  </nav>
+}
+<router-outlet/>
