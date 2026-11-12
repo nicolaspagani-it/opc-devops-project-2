@@ -16,9 +16,9 @@ describe('Register page', () => {
   it('should send the form to the API and display a success message', () => {
     // Le "faux back" répond 201 (Created) à POST /api/register
     cy.intercept('POST', '/api/register', { statusCode: 201 }).as('register');
-    // Le composant affiche un alert("SUCCESS!! :-)") : on l'écoute pour le vérifier
-    const alertStub = cy.stub().as('alert');
-    cy.on('window:alert', alertStub);
+    // Le composant affiche un alert("SUCCESS!! :-)") : on remplace window.alert par un espion pour le vérifier.
+    // (Le vrai alert ne s'ouvre donc jamais.) Fonctionne dans tous les modes de Cypress.
+    cy.window().then(win => cy.stub(win, 'alert').as('alert'));
 
     cy.get('input[formControlName="firstName"]').type('John');
     cy.get('input[formControlName="lastName"]').type('Doe');

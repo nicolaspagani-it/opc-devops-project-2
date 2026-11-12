@@ -1,8 +1,14 @@
 // Chargé automatiquement avant chaque fichier de test E2E.
 
-// Collecte la couverture de code (V8) pendant les tests : voir cypress.config.ts
-import 'cypress-monocart-coverage/support';
 import { fakeJwt } from './jwt';
+
+// Collecte la couverture de code (V8) pendant les tests : voir cypress.config.ts.
+// Elle n'existe que dans Chrome / Edge : dans Electron, le plugin fait échouer tous les tests.
+// On ne le charge donc que dans un navigateur Chromium autre qu'Electron.
+if (Cypress.browser.family === 'chromium' && Cypress.browser.name !== 'electron') {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('cypress-monocart-coverage/support');
+}
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

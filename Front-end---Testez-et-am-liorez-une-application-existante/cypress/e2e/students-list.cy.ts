@@ -86,10 +86,10 @@ describe('Students list page', () => {
         students = students.filter(student => student.id !== 1);
         req.reply({ statusCode: 204 });
       }).as('deleteStudent');
-      // Cypress accepte les confirm() par défaut ; on vérifie le message affiché
-      const confirmStub = cy.stub().returns(true).as('confirm');
-      cy.on('window:confirm', confirmStub);
       cy.visit('/students');
+      // On remplace window.confirm par un espion qui répond "OK" : on vérifie le message affiché.
+      // Fonctionne dans tous les modes de Cypress (le vrai confirm ne s'ouvre jamais).
+      cy.window().then(win => cy.stub(win, 'confirm').returns(true).as('confirm'));
 
       cy.get('tbody tr').eq(0).contains('button', 'Supprimer').click();
 
@@ -102,8 +102,9 @@ describe('Students list page', () => {
 
     it('should not delete anything when the confirmation is cancelled', () => {
       cy.intercept('DELETE', '/api/students/*', cy.spy().as('deleteCall'));
-      cy.on('window:confirm', () => false);
       cy.visit('/students');
+      // L'utilisateur répond "Annuler" à la confirmation
+      cy.window().then(win => cy.stub(win, 'confirm').returns(false).as('confirm'));
 
       cy.get('tbody tr').eq(0).contains('button', 'Supprimer').click();
 

@@ -56,9 +56,9 @@ describe('Student detail page', () => {
     it('should delete the student after confirmation and go back to the list', () => {
       cy.intercept('DELETE', '/api/students/1', { statusCode: 204 }).as('deleteStudent');
       cy.intercept('GET', '/api/students', []);
-      const confirmStub = cy.stub().returns(true).as('confirm');
-      cy.on('window:confirm', confirmStub);
       cy.visit('/students/1');
+      // On remplace window.confirm par un espion qui répond "OK" (le vrai confirm ne s'ouvre jamais)
+      cy.window().then(win => cy.stub(win, 'confirm').returns(true).as('confirm'));
 
       cy.contains('button', 'Supprimer').click();
 
@@ -70,8 +70,9 @@ describe('Student detail page', () => {
 
     it('should stay on the page when the confirmation is cancelled', () => {
       cy.intercept('DELETE', '/api/students/1', cy.spy().as('deleteCall'));
-      cy.on('window:confirm', () => false);
       cy.visit('/students/1');
+      // L'utilisateur répond "Annuler" à la confirmation
+      cy.window().then(win => cy.stub(win, 'confirm').returns(false).as('confirm'));
 
       cy.contains('button', 'Supprimer').click();
 
